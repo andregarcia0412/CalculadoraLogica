@@ -3,8 +3,6 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GUI {
     private JFrame frame;
@@ -194,8 +192,10 @@ public class GUI {
             System.out.println("Equals");
         });
         buttonReturn = new Button("-", () -> {
-            operationText = operationText.substring(0, operationText.length()-1);
-            textField.setText(operationText);
+            if(!operationText.isEmpty()) {
+                operationText = operationText.substring(0, operationText.length()-1);
+                textField.setText(operationText);
+            }
         });
     }
 
