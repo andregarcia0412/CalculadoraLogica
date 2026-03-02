@@ -1,3 +1,5 @@
+package calculator;
+
 public abstract class LogicCalculator {
     public static Boolean calculateConjunction(Boolean a, Boolean b) {
         return a && b;

@@ -1,3 +1,5 @@
+package calculator;
+
 public class TruthTable {
     Boolean[][] table;
     int arguments;

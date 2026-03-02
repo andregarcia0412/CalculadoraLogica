@@ -1,3 +1,5 @@
+import calculator.LogicCalculator;
+import calculator.TruthTable;
 import ui.GUI;
 
 public class Main {
