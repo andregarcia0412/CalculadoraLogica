@@ -34,6 +34,7 @@ public class GUI {
         panel = new JPanel();
 
         textField = new JTextField(operationText);
+        textField.setEditable(false);
 
         initializeButtons();
 
