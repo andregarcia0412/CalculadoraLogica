@@ -38,7 +38,7 @@ public class GUI {
 
         initializeButtons();
 
-        Font font = new Font("Arial", Font.BOLD, 40);
+        Font font = new Font("Segoe UI Symbol", Font.BOLD, 40);
         Dimension buttonDimension = new Dimension(150, 100);
 
         textField.setFont(font);
@@ -189,7 +189,7 @@ public class GUI {
             operationText += ")";
             textField.setText(operationText);
         });
-        buttonEquals = new Button("=", () -> {
+        buttonEquals = new Button("⊨", () -> {
             System.out.println("Equals");
         });
         buttonReturn = new Button("-", () -> {
