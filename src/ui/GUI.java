@@ -32,16 +32,14 @@ public class GUI {
     public GUI() {
         frame = new JFrame();
         panel = new JPanel();
-
         textField = new JTextField(operationText);
-        textField.setEditable(false);
 
         initializeButtons();
 
         Font font = new Font("Segoe UI Symbol", Font.BOLD, 40);
-        Dimension buttonDimension = new Dimension(150, 100);
+        setTextField(font);
 
-        textField.setFont(font);
+        Dimension buttonDimension = new Dimension(150, 100);
         setButtonsSize(
                 buttonDimension,
                 buttonA,
@@ -79,10 +77,10 @@ public class GUI {
                 buttonOpenParenthesis,
                 buttonCloseParenthesis,
                 buttonEquals,
-                buttonReturn);
+                buttonReturn
+        );
 
-        panel.setBorder(BorderFactory.createEmptyBorder(300, 250, 300, 250));
-        panel.setLayout(new GridLayout(4, 3));
+        setPanel();
 
         addButtonsToPanel(
                 panel,
@@ -104,6 +102,20 @@ public class GUI {
                 buttonReturn
         );
 
+        setFrame();
+    }
+
+    private void setTextField(Font font) {
+        textField.setFont(font);
+        textField.setEditable(false);
+    }
+
+    private void setPanel(){
+        panel.setBorder(BorderFactory.createEmptyBorder(300, 250, 300, 250));
+        panel.setLayout(new GridLayout(4, 3));
+    }
+
+    private void setFrame(){
         frame.setLayout(new BorderLayout());
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
