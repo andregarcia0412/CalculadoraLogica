@@ -1,5 +1,4 @@
 package calculator;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,7 @@ public class Lexer {
         LPARENTHESIS,     // (
         RPARENTHESIS      // )
     }
+
     public static class Token {
         TokenType type;
         String text;
@@ -22,6 +22,16 @@ public class Lexer {
         Token(TokenType type, String text) {
             this.type = type;
             this.text = text;
+        }
+    }
+
+    public class StaticStack {
+        private ArrayList<Token> stack = new ArrayList();
+        public void push(Token o) {
+            stack.add(o);
+        }
+        public Object pop() {
+            return stack.remove(stack.size()-1);
         }
     }
 
