@@ -1,18 +1,26 @@
 package calculator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Lexer {
+    public static List<Token> operationTokenized;
     enum TokenType {
-        VAR,        // A,B,C...
-        NOT,        // ~
-        AND,        // ^
-        OR,         // v
-        XOR,        // ⊻
-        IMPLIES,    // →
-        IFF,        // ↔
-        LPARENTHESIS,     // (
-        RPARENTHESIS      // )
+        VAR(0),
+        NOT(5),
+        AND(4),
+        OR(3),
+        XOR(3),
+        IMPLIES(2),
+        IFF(1),
+        LPARENTHESIS(-1),
+        RPARENTHESIS(-1);
+
+        public final int precedence;
+
+        TokenType(int precedence){
+            this.precedence = precedence;
+        }
     }
 
     public static class Token {
@@ -25,15 +33,15 @@ public class Lexer {
         }
     }
 
-    public class StaticStack {
-        private ArrayList<Token> stack = new ArrayList();
-        public void push(Token o) {
-            stack.add(o);
-        }
-        public Object pop() {
-            return stack.remove(stack.size()-1);
-        }
+    public static TruthTable parseTruthTable(String operationInfixa) {
+        operationTokenized = tokenize(operationInfixa);
+        List<Token> operationPosFixa = toPosFixa(operationTokenized);
+        //calculate
+
+        return new TruthTable(1);
     }
+
+
 
     public static List<Token> tokenize(String input){
         List<Token> tokens = new ArrayList<>();
@@ -71,6 +79,18 @@ public class Lexer {
                     }
             }
         }
+        //retorna em notação infixa.
         return  tokens;
+    }
+
+    //Algorítimo de Dijkstra | Shunting Yard Algorithm
+    public static List<Token> toPosFixa(List<Token> tokens) {
+        List<Token> output = new ArrayList<>();
+        Stack<Token> operator = new Stack<>();
+        for(Token token : tokens) {
+
+        }
+
+        return output;
     }
 }
