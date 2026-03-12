@@ -33,10 +33,12 @@ public class Lexer {
         }
     }
 
+    //work in progress
     public static TruthTable solveToTruthTable(String operationInfixa) {
         operationTokenized = tokenize(operationInfixa);
         List<Token> operationPosFixa = toPosFixa(operationTokenized);
         //calculate
+
 
         return new TruthTable(1);
     }
@@ -94,14 +96,16 @@ public class Lexer {
                     break;
 
                 case NOT, AND, OR, XOR, IMPLIES, IFF, LPARENTHESIS:
+                    while(!operator.isEmpty() && sub_validPrecedence(operator,token)){
+                        output.add(operator.pop());
+                    }
                     operator.push(token);
-                    System.out.println("operator na pilha!");
                     break;
                 case RPARENTHESIS:
                     sub_clearStack(operator,output);
             }
-            System.out.println();
         }
+        sub_clearStack(operator,output);
 
         return output;
     }
@@ -113,7 +117,7 @@ public class Lexer {
         }
     }
 
-    private static boolean validPrecedence(int precedence) {
-        return precedence >= 0;
+    private static boolean sub_validPrecedence(Stack<Token> operator, Token token) {
+        return operator.peek().type.precedence > token.type.precedence;
     }
 }
