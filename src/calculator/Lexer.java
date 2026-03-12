@@ -33,7 +33,7 @@ public class Lexer {
         }
     }
 
-    public static TruthTable parseTruthTable(String operationInfixa) {
+    public static TruthTable solveToTruthTable(String operationInfixa) {
         operationTokenized = tokenize(operationInfixa);
         List<Token> operationPosFixa = toPosFixa(operationTokenized);
         //calculate
@@ -88,9 +88,32 @@ public class Lexer {
         List<Token> output = new ArrayList<>();
         Stack<Token> operator = new Stack<>();
         for(Token token : tokens) {
+            switch(token.type){
+                case VAR:
+                    output.add(token);
+                    break;
 
+                case NOT, AND, OR, XOR, IMPLIES, IFF, LPARENTHESIS:
+                    operator.push(token);
+                    System.out.println("operator na pilha!");
+                    break;
+                case RPARENTHESIS:
+                    sub_clearStack(operator,output);
+            }
+            System.out.println();
         }
 
         return output;
+    }
+
+    //"submetodos": ultilizados para separar camadas de abstração
+    private static void sub_clearStack(Stack<Token> operator, List<Token> output){
+        while(!operator.empty() &&  operator.peek().type != TokenType.LPARENTHESIS){
+            output.add(operator.pop());
+        }
+    }
+
+    private static boolean validPrecedence(int precedence) {
+        return precedence >= 0;
     }
 }

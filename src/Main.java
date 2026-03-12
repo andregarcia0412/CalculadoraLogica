@@ -13,6 +13,7 @@ public class Main {
         System.out.println(table);
 
         List<Lexer.Token> tokens = Lexer.tokenize("(p^q)→r");
+        tokens = Lexer.toPosFixa(tokens);
         System.out.println();
 
         TruthTable table2 = new TruthTable(2);
