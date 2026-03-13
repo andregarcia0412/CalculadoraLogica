@@ -26,12 +26,9 @@ public class GUI {
     private Button buttonReturn;
 
     private JTextField textField;
-    private int tiagaoexemplar = 0;
     private String operationText = "";
 
     public GUI() {
-        tiagaoexemplar++;
-        System.out.println(tiagaoexemplar);
         frame = new JFrame();
         panel = new JPanel();
         textField = new JTextField(operationText);
@@ -204,6 +201,7 @@ public class GUI {
             textField.setText(operationText);
         });
         buttonEquals = new Button("⊨", () -> {
+            //Tiago, pode inserir algo aqui.
             System.out.println("Equals");
         });
         buttonReturn = new Button("-", () -> {

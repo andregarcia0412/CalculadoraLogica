@@ -3,18 +3,12 @@ import calculator.LogicCalculator;
 import calculator.TruthTable;
 import ui.GUI;
 
-import java.util.Arrays;
-import java.util.List;
-
-
 public class Main {
     public static void main(String[] args) {
-        TruthTable table = new TruthTable(2);
+        TruthTable table = new TruthTable(4);
         System.out.println(table);
 
-        List<Lexer.Token> tokens = Lexer.tokenize("(p^q)→r");
-        tokens = Lexer.toPosFixa(tokens);
-        System.out.println();
+        TruthTable resposta = Lexer.solveToTruthTable("(p^q)→r");
 
         TruthTable table2 = new TruthTable(2);
         for(int i = 0; i < table2.getLines(); i++) {
@@ -22,5 +16,6 @@ public class Main {
         }
 
         new GUI();
+
     }
 }

@@ -37,8 +37,7 @@ public class Lexer {
     public static TruthTable solveToTruthTable(String operationInfixa) {
         operationTokenized = tokenize(operationInfixa);
         List<Token> operationPosFixa = toPosFixa(operationTokenized);
-        //calculate
-
+        Object[] arr = operationPosFixa.reversed().toArray();
 
         return new TruthTable(1);
     }
@@ -82,7 +81,7 @@ public class Lexer {
             }
         }
         //retorna em notação infixa.
-        return  tokens;
+        return tokens;
     }
 
     //Algorítimo de Dijkstra | Shunting Yard Algorithm

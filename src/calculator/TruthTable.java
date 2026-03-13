@@ -21,6 +21,14 @@ public class TruthTable {
         return table;
     }
 
+    public boolean[] getColum(int columnIndex){
+        boolean[] result = new boolean[lines];
+        for(int j = 0; j < lines; j++){
+            result[j] = table[j][columnIndex];
+        }
+        return result;
+    }
+
     public int getArguments() {
         return arguments;
     }
