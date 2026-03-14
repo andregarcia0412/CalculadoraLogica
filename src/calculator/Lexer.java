@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Lexer {
-    public static List<Token> operationTokenized;
+    public static List<Token> operation;
     enum TokenType {
         VAR(0),
 
@@ -67,35 +67,91 @@ public class Lexer {
     public static class Token {
         TokenType type;
         String text;
+        private Boolean[] table;
 
         Token(TokenType type, String text) {
             this.type = type;
             this.text = text;
         }
+
+        public Boolean[] getTable() {
+            return table;
+        }
+
+        public Boolean getTable(int i) {
+            return table[i];
+        }
+
+        public void setTable(Boolean[] table) {
+            this.table = table;
+        }
     }
 
     //work in progress
     public static TruthTable solveToTruthTable(String operationInfixa) {
-        operationTokenized = tokenize(operationInfixa);
-        ArrayList<Token> operationPosFixa = toPosFixa(operationTokenized);
-        operationPosFixa.reversed();
 
-        TruthTable tt = new TruthTable(sub_getVARquantity(operationPosFixa));
+        operation = parseOperation(operationInfixa);
 
-        int contador = 0;
-        Token atual = operationPosFixa.get(0);
-        while(operationPosFixa.size()>1) {
-            atual = operationPosFixa.get(contador);
+        int varCount = sub_varCount((ArrayList<Token>) operation);
+        TruthTable tt = new TruthTable(varCount);
 
+        int varsLeft = varCount;
 
-            operationPosFixa.remove(contador);
-            contador++;
+        for (Token token : operation) {
+            if (token.type == TokenType.VAR) {
+                token.setTable(tt.getColum(varsLeft));
+                varsLeft--;
+            }
         }
 
-        return new TruthTable(1);
+        Stack<Token> stack = new Stack<>();
+
+        for (Token token : operation) {
+
+            if (token.type == TokenType.VAR) {
+                stack.push(token);
+                continue;
+            }
+
+            if (token.type == TokenType.NOT) {
+
+                Token a = stack.pop();
+
+                Boolean[] result = new Boolean[a.getTable().length];
+
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = token.type.calculate(a.getTable(i), null);
+                }
+
+                Token resToken = new Token(token.type, "tmp");
+                resToken.setTable(result);
+
+                stack.push(resToken);
+
+            } else {
+
+                Token b = stack.pop();
+                Token a = stack.pop();
+
+                Boolean[] result = new Boolean[a.getTable().length];
+
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = token.type.calculate(a.getTable(i), b.getTable(i));
+                }
+
+                Token resToken = new Token(token.type, "tmp");
+                resToken.setTable(result);
+
+                stack.push(resToken);
+            }
+        }
+
+        Token result = stack.pop();
+
+        tt.addColumn(result.getTable());
+
+        return tt;
     }
-
-
 
     public static List<Token> tokenize(String input){
         List<Token> tokens = new ArrayList<>();
@@ -173,11 +229,24 @@ public class Lexer {
         return operator.peek().type.precedence > token.type.precedence;
     }
 
-    private static int sub_getVARquantity(ArrayList<Token> tokens) {
+    private static int sub_varCount(ArrayList<Token> tokens) {
+        return (int) tokens.stream()
+                .filter(t -> t.type == TokenType.VAR)
+                .map(t -> t.text)
+                .distinct()
+                .count();
+    }
+
+    private static int sub_operatorCount(ArrayList<Token> tokens) {
         int quant = 0;
         for(Token token : tokens) {
-            quant += (token.type == TokenType.VAR) ?  1 : 0;
+            quant += ((token.type != TokenType.VAR)&&(token.type != TokenType.LPARENTHESIS)&&((token.type != TokenType.RPARENTHESIS))) ?  1 : 0;
         }
         return quant;
+    }
+
+    private static ArrayList<Token> parseOperation(String operationInfixa) {
+        operation = tokenize(operationInfixa);
+        return toPosFixa(operation);
     }
 }

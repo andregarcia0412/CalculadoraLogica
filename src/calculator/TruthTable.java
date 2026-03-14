@@ -21,12 +21,16 @@ public class TruthTable {
         return table;
     }
 
-    public boolean[] getColum(int columnIndex){
-        boolean[] result = new boolean[lines];
+    public Boolean[] getColum(int columnIndex){
+        Boolean[] result = new Boolean[lines];
         for(int j = 0; j < lines; j++){
-            result[j] = table[j][columnIndex];
+            result[j] = table[j][columnIndex-1];
         }
         return result;
+    }
+
+    public void addColumn(TruthTable truthTable){
+        TruthTable truthTableCopy = new TruthTable(truthTable.getArguments());
     }
 
     public int getArguments() {
