@@ -1,6 +1,9 @@
 package ui;
 
 
+import calculator.Lexer;
+import calculator.Parser;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -202,7 +205,11 @@ public class GUI {
             textField.setText(operationText);
         });
         buttonEquals = new Button("⊨", () -> {
-            System.out.println("Equals");
+            boolean valida = Parser.isFBF(Lexer.tokenize(operationText));
+            JOptionPane.showMessageDialog(frame,
+                    valida ? " FBF válida!" : " Não é uma FBF válida!",
+                    "Resultado",
+                    valida ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
         });
         buttonReturn = new Button("-", () -> {
             if(!operationText.isEmpty()) {
