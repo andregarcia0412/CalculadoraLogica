@@ -2,6 +2,8 @@ package calculator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Lexer {
     public static List<Token> operation;
@@ -87,70 +89,65 @@ public class Lexer {
         }
     }
 
-    //work in progress
+    //GPT
     public static TruthTable solveToTruthTable(String operationInfixa) {
+        List<Token> infix = tokenize(operationInfixa);
+        ArrayList<Token> postfix = toPosFixa(infix);
+        operation = postfix;
 
-        operation = parseOperation(operationInfixa);
+        LinkedHashMap<String, Integer> varIndex = new LinkedHashMap<>();
+        for (Token token : infix) {
+            if (token.type == TokenType.VAR && !varIndex.containsKey(token.text)) {
+                varIndex.put(token.text, varIndex.size() + 1); // columns are 1-based
+            }
+        }
 
-        int varCount = sub_varCount((ArrayList<Token>) operation);
+        int varCount = varIndex.size();
         TruthTable tt = new TruthTable(varCount);
 
-        int varsLeft = varCount;
-
-        for (Token token : operation) {
-            if (token.type == TokenType.VAR) {
-                token.setTable(tt.getColum(varsLeft));
-                varsLeft--;
-            }
-        }
-
-        Stack<Token> stack = new Stack<>();
-
-        for (Token token : operation) {
-
-            if (token.type == TokenType.VAR) {
-                stack.push(token);
-                continue;
-            }
-
-            if (token.type == TokenType.NOT) {
-
-                Token a = stack.pop();
-
-                Boolean[] result = new Boolean[a.getTable().length];
-
-                for (int i = 0; i < result.length; i++) {
-                    result[i] = token.type.calculate(a.getTable(i), null);
-                }
-
-                Token resToken = new Token(token.type, "tmp");
-                resToken.setTable(result);
-
-                stack.push(resToken);
-
-            } else {
-
-                Token b = stack.pop();
-                Token a = stack.pop();
-
-                Boolean[] result = new Boolean[a.getTable().length];
-
-                for (int i = 0; i < result.length; i++) {
-                    result[i] = token.type.calculate(a.getTable(i), b.getTable(i));
-                }
-
-                Token resToken = new Token(token.type, "tmp");
-                resToken.setTable(result);
-
-                stack.push(resToken);
-            }
-        }
-
-        Token result = stack.pop();
-
-        tt.addColumn(result.getTable());
-
+        int[] idx = new int[]{postfix.size() - 1};
+        Token resultToken = evalPostfix(postfix, idx, tt, varIndex);
+        tt.addColumn(resultToken.getTable());
         return tt;
+    }
+
+    //GPT
+    private static Token evalPostfix(
+            ArrayList<Token> postfix,
+            int[] idx,
+            TruthTable tt,
+            Map<String, Integer> varIndex
+    ) {
+        Token token = postfix.get(idx[0]--);
+
+        if (token.type == TokenType.VAR) {
+            if (token.getTable() == null) {
+                Integer column = varIndex.get(token.text);
+                token.setTable(tt.getColum(column));
+            }
+            return token;
+        }
+
+        if (token.type == TokenType.NOT) {
+            Token buffer = evalPostfix(postfix, idx, tt, varIndex);
+            Boolean[] result = new Boolean[buffer.getTable().length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = token.type.calculate(buffer.getTable(i), null);
+            }
+            Token resultToken = new Token(token.type, "tmp");
+            resultToken.setTable(result);
+            return resultToken;
+        }
+
+        Token b = evalPostfix(postfix, idx, tt, varIndex);
+        Token a = evalPostfix(postfix, idx, tt, varIndex);
+        Boolean[] result = new Boolean[a.getTable().length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = token.type.calculate(a.getTable(i), b.getTable(i));
+        }
+        Token resToken = new Token(token.type, "tmp");
+        resToken.setTable(result);
+        return resToken;
     }
 
     public static List<Token> tokenize(String input){

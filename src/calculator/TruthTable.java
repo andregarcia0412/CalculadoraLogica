@@ -1,5 +1,7 @@
 package calculator;
 
+import java.util.Arrays;
+
 public class TruthTable {
     Boolean[][] table;
     int arguments;
@@ -29,8 +31,9 @@ public class TruthTable {
         return result;
     }
 
-    public void addColumn(TruthTable truthTable){
-        TruthTable truthTableCopy = new TruthTable(truthTable.getArguments());
+    public void addColumn(Boolean[] truthTable){
+        Boolean[][] copy = new  Boolean[lines][truthTable.length];
+
     }
 
     public int getArguments() {
