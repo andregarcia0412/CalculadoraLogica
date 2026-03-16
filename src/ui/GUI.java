@@ -1,6 +1,9 @@
 package ui;
 
 
+import calculator.Lexer;
+import calculator.TruthTable;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -26,7 +29,6 @@ public class GUI {
     private Button buttonReturn;
 
     private JTextField textField;
-
     private String operationText = "";
 
     public GUI() {
@@ -202,7 +204,9 @@ public class GUI {
             textField.setText(operationText);
         });
         buttonEquals = new Button("⊨", () -> {
-            System.out.println("Equals");
+            //Tiago, pode inserir algo aqui.
+            TruthTable resposta = Lexer.solveToTruthTable(operationText);
+            System.out.println(resposta);
         });
         buttonReturn = new Button("-", () -> {
             if(!operationText.isEmpty()) {
