@@ -106,8 +106,7 @@ public class Lexer {
         TruthTable tt = new TruthTable(varCount);
 
         int[] idx = new int[]{postfix.size() - 1};
-        Token resultToken = evalPostfix(postfix, idx, tt, varIndex);
-        tt.addColumn(resultToken.getTable());
+        evalPostfix(postfix, idx, tt, varIndex);
         return tt;
     }
 
@@ -136,6 +135,7 @@ public class Lexer {
             }
             Token resultToken = new Token(token.type, "tmp");
             resultToken.setTable(result);
+            tt.addColumn(result);
             return resultToken;
         }
 
@@ -147,6 +147,7 @@ public class Lexer {
         }
         Token resToken = new Token(token.type, "tmp");
         resToken.setTable(result);
+        tt.addColumn(result);
         return resToken;
     }
 
@@ -224,26 +225,5 @@ public class Lexer {
 
     private static boolean sub_validPrecedence(Stack<Token> operator, Token token) {
         return operator.peek().type.precedence > token.type.precedence;
-    }
-
-    private static int sub_varCount(ArrayList<Token> tokens) {
-        return (int) tokens.stream()
-                .filter(t -> t.type == TokenType.VAR)
-                .map(t -> t.text)
-                .distinct()
-                .count();
-    }
-
-    private static int sub_operatorCount(ArrayList<Token> tokens) {
-        int quant = 0;
-        for(Token token : tokens) {
-            quant += ((token.type != TokenType.VAR)&&(token.type != TokenType.LPARENTHESIS)&&((token.type != TokenType.RPARENTHESIS))) ?  1 : 0;
-        }
-        return quant;
-    }
-
-    private static ArrayList<Token> parseOperation(String operationInfixa) {
-        operation = tokenize(operationInfixa);
-        return toPosFixa(operation);
     }
 }

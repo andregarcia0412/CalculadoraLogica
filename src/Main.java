@@ -1,21 +1,24 @@
 import calculator.Lexer;
-import calculator.LogicCalculator;
 import calculator.TruthTable;
 import ui.GUI;
 
 public class Main {
     public static void main(String[] args) {
-        TruthTable table = new TruthTable(4);
-        System.out.println(table);
 
         TruthTable resposta = Lexer.solveToTruthTable("(p^q)→r");
-
-        TruthTable table2 = new TruthTable(2);
-        for(int i = 0; i < table2.getLines(); i++) {
-            System.out.println(LogicCalculator.conjunction(table2.getTable()[i][0], table2.getTable()[i][1]));
-        }
+        Boolean[][] arr = resposta.getTable();
+        imprimirMatriz(arr);
 
         new GUI();
+    }
+
+    public static void imprimirMatriz(Boolean[][] matriz) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println();
+        }
 
     }
 }
