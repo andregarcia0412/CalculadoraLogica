@@ -2,6 +2,7 @@ package ui;
 
 
 import calculator.Lexer;
+import calculator.Parser;
 import calculator.TruthTable;
 
 import javax.swing.*;
@@ -204,6 +205,11 @@ public class GUI {
             textField.setText(operationText);
         });
         buttonEquals = new Button("⊨", () -> {
+            boolean valida = Parser.isFBF(Lexer.tokenize(operationText));
+            JOptionPane.showMessageDialog(frame,
+                    valida ? " FBF válida!" : " Não é uma FBF válida!",
+                    "Resultado",
+                    valida ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
             //Tiago, pode inserir algo aqui.
             TruthTable resposta = Lexer.solveToTruthTable(operationText);
             System.out.println(resposta);
