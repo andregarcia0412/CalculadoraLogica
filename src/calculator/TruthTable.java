@@ -20,8 +20,9 @@ public class TruthTable {
         }
 
         for(int i = 0; i < lines; i++) {
-            for(int j = arguments -1; j >= 0; j--) {
-                table[i][j] = (i & (1 << j)) != 0;
+            int value = lines - 1 - i;
+            for(int j = 0; j < arguments; j++) {
+                table[i][j] = (value & (1 << arguments - 1 - j)) != 0;
             }
         }
     }
@@ -30,22 +31,6 @@ public class TruthTable {
         Boolean[][] view = new Boolean[lines][arguments];
         for (int i = 0; i < lines; i++) {
             System.arraycopy(table[i], 0, view[i], 0, arguments);
-        }
-
-        // reflect rows
-        for (int i = 0; i < lines / 2; i++) {
-            Boolean[] temp = view[i];
-            view[i] = view[lines - 1 - i];
-            view[lines - 1 - i] = temp;
-        }
-
-        // reflect only the original variable columns
-        for (int i = 0; i < lines; i++) {
-            for (int j = 0; j < baseArguments / 2; j++) {
-                Boolean temp = view[i][j];
-                view[i][j] = view[i][baseArguments - 1 - j];
-                view[i][baseArguments - 1 - j] = temp;
-            }
         }
 
         return view;

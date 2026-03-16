@@ -1,4 +1,5 @@
 import calculator.Lexer;
+import calculator.Token;
 import calculator.TruthTable;
 import ui.GUI;
 import calculator.Parser;
@@ -20,7 +21,7 @@ public class Main {
         };
 
         for (String formula : testes) {
-            List<Lexer.Token> tokens = Lexer.tokenize(formula);
+            List<Token> tokens = Lexer.tokenize(formula);
             boolean valida = Parser.isFBF(tokens);
             System.out.println(formula + " → " + (valida ? "FBF válida" : "NÃO é FBF"));
         }
