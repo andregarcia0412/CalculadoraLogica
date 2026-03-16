@@ -68,12 +68,14 @@ public class Lexer {
 
     public static class Token {
         TokenType type;
-        String text;
+        char text;
         private Boolean[] table;
+        String expression;
 
-        Token(TokenType type, String text) {
+        Token(TokenType type, char text) {
             this.type = type;
             this.text = text;
+            this.expression = String.valueOf(text);
         }
 
         public Boolean[] getTable() {
@@ -95,7 +97,7 @@ public class Lexer {
         ArrayList<Token> postfix = toPosFixa(infix);
         operation = postfix;
 
-        LinkedHashMap<String, Integer> varIndex = new LinkedHashMap<>();
+        LinkedHashMap<Character, Integer> varIndex = new LinkedHashMap<>();
         for (Token token : infix) {
             if (token.type == TokenType.VAR && !varIndex.containsKey(token.text)) {
                 varIndex.put(token.text, varIndex.size() + 1); // columns are 1-based
@@ -103,7 +105,14 @@ public class Lexer {
         }
 
         int varCount = varIndex.size();
-        TruthTable tt = new TruthTable(varCount);
+        char[] variables = new char[varCount];
+        int i = 0;
+
+        for(char c : varIndex.keySet()) {
+            variables[i++] = c;
+        }
+
+        TruthTable tt = new TruthTable(variables);
 
         int[] idx = new int[]{postfix.size() - 1};
         evalPostfix(postfix, idx, tt, varIndex);
@@ -115,7 +124,7 @@ public class Lexer {
             ArrayList<Token> postfix,
             int[] idx,
             TruthTable tt,
-            Map<String, Integer> varIndex
+            Map<Character, Integer> varIndex
     ) {
         Token token = postfix.get(idx[0]--);
 
@@ -133,9 +142,14 @@ public class Lexer {
             for (int i = 0; i < result.length; i++) {
                 result[i] = token.type.calculate(buffer.getTable(i), null);
             }
-            Token resultToken = new Token(token.type, "tmp");
+
+            String expression = "(~" + buffer.expression + ")";
+
+            Token resultToken = new Token(token.type, '#');
             resultToken.setTable(result);
-            tt.addColumn(result);
+            resultToken.expression = expression;
+
+            tt.addColumn(result, expression);
             return resultToken;
         }
 
@@ -145,9 +159,13 @@ public class Lexer {
         for (int i = 0; i < result.length; i++) {
             result[i] = token.type.calculate(a.getTable(i), b.getTable(i));
         }
-        Token resToken = new Token(token.type, "tmp");
+
+        String expression = "(" + a.expression + token.text + b.expression + ")";
+
+        Token resToken = new Token(token.type, '#');
         resToken.setTable(result);
-        tt.addColumn(result);
+        resToken.expression = expression;
+        tt.addColumn(result, expression);
         return resToken;
     }
 
@@ -157,33 +175,33 @@ public class Lexer {
             char c = input.charAt(i);
             switch (c){
                 case '~':
-                    tokens.add(new Token(TokenType.NOT,"~"));
+                    tokens.add(new Token(TokenType.NOT,'~'));
                     break;
                 case '^':
-                    tokens.add(new Token(TokenType.AND,"^"));
+                    tokens.add(new Token(TokenType.AND,'^'));
                     break;
                 case 'v':
-                    tokens.add(new Token(TokenType.OR, "v"));
+                    tokens.add(new Token(TokenType.OR, 'v'));
                     break;
                 case '⊻':
-                    tokens.add(new Token(TokenType.XOR,"⊻"));
+                    tokens.add(new Token(TokenType.XOR,'⊻'));
                     break;
                 case '→':
-                    tokens.add(new Token(TokenType.IMPLIES,"→"));
+                    tokens.add(new Token(TokenType.IMPLIES,'→'));
                     break;
                 case '↔':
-                    tokens.add(new Token(TokenType.IFF,"↔"));
+                    tokens.add(new Token(TokenType.IFF,'↔'));
                     break;
                 case '(':
-                    tokens.add(new Token(TokenType.LPARENTHESIS,"("));
+                    tokens.add(new Token(TokenType.LPARENTHESIS,'('));
                     break;
                 case ')':
-                    tokens.add(new Token(TokenType.RPARENTHESIS,")"));
+                    tokens.add(new Token(TokenType.RPARENTHESIS,')'));
                     break;
 
                 default:
                     if(Character.isLetter(c)){
-                        tokens.add(new Token(TokenType.VAR,String.valueOf(c)));
+                        tokens.add(new Token(TokenType.VAR,c));
                     }
             }
         }
@@ -201,14 +219,24 @@ public class Lexer {
                     output.add(token);
                     break;
 
-                case NOT, AND, OR, XOR, IMPLIES, IFF, LPARENTHESIS:
+                case LPARENTHESIS:
+                    operator.push(token);
+                    break;
+
+                case NOT, AND, OR, XOR, IMPLIES, IFF:
                     while(!operator.isEmpty() && sub_validPrecedence(operator,token)){
                         output.add(operator.pop());
                     }
                     operator.push(token);
                     break;
                 case RPARENTHESIS:
-                    sub_clearStack(operator,output);
+                    while(!operator.isEmpty() && operator.peek().type != TokenType.LPARENTHESIS){
+                        output.add(operator.pop());
+                    }
+                    if(!operator.isEmpty()){
+                        operator.pop();
+                    }
+                    break;
             }
         }
         sub_clearStack(operator,output);
@@ -224,6 +252,6 @@ public class Lexer {
     }
 
     private static boolean sub_validPrecedence(Stack<Token> operator, Token token) {
-        return operator.peek().type.precedence > token.type.precedence;
+        return operator.peek().type.precedence >= token.type.precedence;
     }
 }

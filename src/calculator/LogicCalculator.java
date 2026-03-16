@@ -22,7 +22,7 @@ public abstract class LogicCalculator {
     }
 
     public static Boolean implication(Boolean a, Boolean b) {
-        return conjunction(negation(a), b);
+        return disjunction(negation(a), b);
     }
 
 }

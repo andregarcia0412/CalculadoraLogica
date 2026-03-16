@@ -5,12 +5,19 @@ public class TruthTable {
     int arguments;
     int lines;
     final int baseArguments;
+    String[] columnNames;
 
-    public TruthTable(int arguments) {
-        this.arguments = arguments;
+    public TruthTable(char[] variables) {
+        this.arguments = variables.length;
         this.baseArguments = arguments;
         this.lines = 1 << arguments;
         this.table = new Boolean[lines][arguments];
+
+        this.columnNames = new String[arguments];
+
+        for(int i = 0; i < arguments; i++) {
+            columnNames[i] = String.valueOf(variables[i]);
+        }
 
         for(int i = 0; i < lines; i++) {
             for(int j = arguments -1; j >= 0; j--) {
@@ -52,7 +59,7 @@ public class TruthTable {
         return result;
     }
 
-    public void addColumn(Boolean[] truthTable){
+    public void addColumn(Boolean[] truthTable, String name){
         if (truthTable == null || truthTable.length != lines) {
             throw new IllegalArgumentException("Column size must match number of lines.");
         }
@@ -66,7 +73,14 @@ public class TruthTable {
         }
 
         table = copy;
-        arguments += 1;
+
+        String[] newNames = new String[arguments + 1];
+        System.arraycopy(columnNames, 0, newNames, 0, arguments);
+
+        newNames[arguments] = name;
+
+        columnNames = newNames;
+        arguments++;
     }
 
     public int getArguments() {
@@ -76,6 +90,14 @@ public class TruthTable {
 
     public int getLines() {
         return lines;
+    }
+
+    public String[] getColumnNames() {
+        return columnNames;
+    }
+
+    public void setColumnNames(String[] columnNames) {
+        this.columnNames = columnNames;
     }
 
     @Override
