@@ -90,13 +90,13 @@ public class Lexer {
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             switch (c){
-                case '~':
+                case '∼':
                     tokens.add(new Token(TokenType.NOT,'~'));
                     break;
-                case '^':
+                case '∧':
                     tokens.add(new Token(TokenType.AND,'^'));
                     break;
-                case 'v':
+                case '∨':
                     tokens.add(new Token(TokenType.OR, 'v'));
                     break;
                 case '⊻':

@@ -10,7 +10,9 @@
 
     public class GUI {
         private JFrame frame;
-        private JPanel panel;
+        private JPanel mainKeyboardPanel;
+        private JPanel varsPanel;
+        private JPanel opsPanel;
 
         private Button buttonA;
         private Button buttonB;
@@ -28,13 +30,13 @@
         private Button buttonCloseParenthesis;
         private Button buttonEquals;
         private Button buttonReturn;
+        private Button ButtonClearAll;
 
         private JTextField textField;
         private String operationText = "";
 
         public GUI() {
             frame = new JFrame();
-            panel = new JPanel();
             textField = new JTextField(operationText);
 
             initializeButtons();
@@ -42,7 +44,7 @@
             Font font = new Font("Segoe UI Symbol", Font.BOLD, 40);
             setTextField(font);
 
-            Dimension buttonDimension = new Dimension(150, 100);
+            Dimension buttonDimension = new Dimension(80, 60);
             setButtonsSize(
                     buttonDimension,
                     buttonA,
@@ -83,27 +85,7 @@
                     buttonReturn
             );
 
-            setPanel();
-
-            addButtonsToPanel(
-                    panel,
-                    buttonA,
-                    buttonB,
-                    buttonC,
-                    buttonD,
-                    buttonE,
-                    buttonF,
-                    buttonConditional,
-                    buttonBiconditional,
-                    buttonExclusiveOr,
-                    buttonNegation,
-                    buttonAnd,
-                    buttonOr,
-                    buttonOpenParenthesis,
-                    buttonCloseParenthesis,
-                    buttonEquals,
-                    buttonReturn
-            );
+            setupPanels();
 
             setFrame();
         }
@@ -111,21 +93,60 @@
         private void setTextField(Font font) {
             textField.setFont(font);
             textField.setEditable(false);
+            textField.setHorizontalAlignment(JTextField.RIGHT);
+            textField.setPreferredSize(new Dimension(500, 80));
+            textField.setBackground(Color.WHITE);
+            textField.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY,1),
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+            ));
         }
 
-        private void setPanel(){
-            panel.setBorder(BorderFactory.createEmptyBorder(300, 250, 300, 250));
-            panel.setLayout(new GridLayout(4, 3));
+        private void setupPanels(){
+            mainKeyboardPanel = new JPanel();
+            mainKeyboardPanel.setLayout(new BorderLayout(10, 10));
+            mainKeyboardPanel.setBorder(BorderFactory.createEmptyBorder(50, 20, 50, 20));
+
+            varsPanel = new JPanel();
+            varsPanel.setLayout(new GridLayout(3, 2, 5, 5));
+            varsPanel.add(buttonA);
+            varsPanel.add(buttonB);
+            varsPanel.add(buttonC);
+            varsPanel.add(buttonD);
+            varsPanel.add(buttonE);
+            varsPanel.add(buttonF);
+
+            opsPanel = new JPanel();
+            opsPanel.setLayout(new GridLayout(4, 3, 5, 5));
+            opsPanel.add(buttonOpenParenthesis);
+            opsPanel.add(buttonCloseParenthesis);
+            opsPanel.add(buttonReturn);
+
+            opsPanel.add(buttonAnd);
+            opsPanel.add(buttonOr);
+            opsPanel.add(buttonNegation);
+
+            opsPanel.add(buttonConditional);
+            opsPanel.add(buttonBiconditional);
+            opsPanel.add(buttonExclusiveOr);
+
+            opsPanel.add(new JLabel(""));
+            opsPanel.add(new JLabel(""));
+            opsPanel.add(buttonEquals);
+
+            mainKeyboardPanel.add(varsPanel, BorderLayout.WEST);
+            mainKeyboardPanel.add(opsPanel, BorderLayout.CENTER);
         }
 
         private void setFrame(){
-            frame.setLayout(new BorderLayout());
-            frame.add(panel, BorderLayout.CENTER);
+            frame.setLayout(new BorderLayout(0, 10));
+            frame.add(textField, BorderLayout.NORTH);
+            frame.add(mainKeyboardPanel, BorderLayout.CENTER);
+
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setTitle("Calculadora Lógica");
-            frame.setResizable(false);
-            frame.add(textField, BorderLayout.NORTH);
             frame.pack();
+            frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         }
 
@@ -138,12 +159,6 @@
         private void setButtonsSize(Dimension dimension, JButton... buttons) {
             for(JButton button : buttons) {
                 button.setPreferredSize(dimension);
-            }
-        }
-
-        private void addButtonsToPanel(JPanel panel, JButton... buttons) {
-            for(JButton button : buttons) {
-                panel.add(button);
             }
         }
 
@@ -184,16 +199,16 @@
                 operationText += "⊻";
                 textField.setText(operationText);
             });
-            buttonNegation = new Button("~", () -> {
-                operationText += "~";
+            buttonNegation = new Button("∼", () -> {
+                operationText += "∼";
                 textField.setText(operationText);
             });
-            buttonAnd = new Button("^", () -> {
-                operationText += "^";
+            buttonAnd = new Button("∧", () -> {
+                operationText += "∧";
                 textField.setText(operationText);
             });
-            buttonOr = new Button("v", () -> {
-                operationText += "v";
+            buttonOr = new Button("∨", () -> {
+                operationText += "∨";
                 textField.setText(operationText);
             });
             buttonOpenParenthesis = new Button("(", () -> {
@@ -222,7 +237,7 @@
 
                 JOptionPane.showMessageDialog(frame, new JScrollPane(table), "Tabela Verdade", JOptionPane.INFORMATION_MESSAGE);
             });
-            buttonReturn = new Button("-", () -> {
+            buttonReturn = new Button("⌫", () -> {
                 if(!operationText.isEmpty()) {
                     operationText = operationText.substring(0, operationText.length()-1);
                     textField.setText(operationText);
