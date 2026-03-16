@@ -1,11 +1,7 @@
 import calculator.Lexer;
-import calculator.LogicCalculator;
 import calculator.TruthTable;
 import ui.GUI;
 import calculator.Parser;
-
-import java.util.List;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -32,6 +28,8 @@ public class Main {
         *   - Adicionar meio de mostrar o resultado da tabela verdade
         * LogicCalculator:
         * */
+        TruthTable resposta = Lexer.solveToTruthTable("(p^q)→r");
+        Boolean[][] arr = resposta.getTable();
 
         new GUI();
     }
