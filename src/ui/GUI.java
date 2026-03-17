@@ -222,12 +222,8 @@
             });
             buttonEquals = new Button("⊨", () -> {
                 boolean valida = Parser.isFBF(Lexer.tokenize(operationText));
-                JOptionPane.showMessageDialog(frame,
-                        valida ? " FBF válida!" : " Não é uma FBF válida!",
-                        "Resultado",
-                        valida ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-
                 if(!valida) {
+                    JOptionPane.showMessageDialog(frame, "Não é uma FBF válida", "Resultado", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
