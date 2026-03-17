@@ -26,11 +26,6 @@ public class Main {
             System.out.println(formula + " → " + (valida ? "FBF válida" : "NÃO é FBF"));
         }
 
-        /*
-        * GUI:
-        *   - Adicionar meio de mostrar o resultado da tabela verdade
-        * LogicCalculator:
-        * */
         TruthTable resposta = Lexer.solveToTruthTable("(p^q)→r");
         Boolean[][] arr = resposta.getTable();
 
