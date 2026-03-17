@@ -7,6 +7,7 @@
 
     import javax.swing.*;
     import java.awt.*;
+    import java.util.Arrays;
 
     public class GUI {
         private JFrame frame;
@@ -234,8 +235,22 @@
                 System.out.println(resposta);
 
                 JTable table = createTable(resposta);
+                Boolean[] lastColumn = resposta.getColum(resposta.getArguments());
+                System.out.println(Arrays.toString(lastColumn));
 
-                JOptionPane.showMessageDialog(frame, new JScrollPane(table), "Tabela Verdade", JOptionPane.INFORMATION_MESSAGE);
+                boolean hasTrueValues = false;
+                boolean hasFalseValues = false;
+
+                for (Boolean bool : lastColumn) {
+                    if(bool) {
+                        hasTrueValues = true;
+                    } else{
+                        hasFalseValues = true;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, new JScrollPane(table), String.format("Tabela verdade (%s)", hasTrueValues && hasFalseValues ? "Contingência" : hasTrueValues ? "Tautologia" : "Contradição"), JOptionPane.INFORMATION_MESSAGE);
+
             });
             buttonReturn = new Button("⌫", () -> {
                 if(!operationText.isEmpty()) {
